@@ -1,0 +1,104 @@
+---
+title: "Lab 2 (Week 10)"
+author: "Jeffrey Yau"
+date: "November 4, 2015"
+output: pdf_document
+---
+
+##Instructions
+1. Lab 2 covers materials taught in **week 8 - 10**. It is designed to test and reinforce the concepts you have learned, and in some cases, extend them to more advanced scenarios.
+
+2. **Please make sure you follow the instructions.**
+
+3. Name your file in the following format: **FirstName_LastName_w271_F15_week10_lab2.FileExtension**
+
+4. Note that the lab is a **group exercise**.  We encourage that you form a group between *3 - 4 students*. Each group makes 1 submission to the ISVC platform by **the beginning of the live session on Wednesday, November 18. Note that you have 2 weeks to complete the lab instead of 1 week as stated originally**.
+
+5. Submission: Your group will **submit 2 files**:
+    1. A report of all of your answers (in pdf of html format if you print them from Rmd or juypter notebook)
+    
+    2. An extensively annotated R-scripts, which could an Rmd file. It is very important that you show the steps to arrive at the answers and **highlight in bold** the final answer. Graphs must have a descriptive title, well-labeled x- and y-axis, clear axis tick marks, and legend (where needed). They must be reasonably sized.
+    
+6. Late submission will not be given credits. If your group have troubles completing the exam on-time, please let us know as soon as you can, not on the day of submission or the day before.
+
+
+## Question 1: Concepts (15 points)
+
+1.1 (1 points) Define the term *stochastic process*.
+    
+1.2 (2 points) Define the term *time series*. What is the difference between a stochastic process and a time series?
+
+1.3  (3 points) In your own words, discuss the mean function, variance function, and measure of dependency structure in the context of time series (week 8 - 10) and compare them with those we studied in classical linear model (week 1 - 7).
+    
+1.4 (2 points) Define strict and weak statonarity
+
+1.5 (3 points) Give an example of a time series in real life. Describe the series. Evaluate (not empirical work is needed) whether or not the series can be modeled using the class of autoregressive models?
+
+1.6 (4 points) In your own words, define and describe *partial autocorrelation function (PACF)*. Why is it not enough just to *autocorrelation functon (ACF)* to capture the dependency of a series?
+
+
+## Question 2: (25 points)
+
+Determine if each of the following models is stationary?
+
+2.1 (5 points) $z_t = 0.95z_{t-1} + \omega_t$ 
+
+2.2 (5 points)  $z_t = 0.8z_{t-1} + 0.3z_{t-2} + \omega_t$
+
+2.3 (5 points)  $z_t = -0.5z_{t-1} + 0.5z_{t-2} + \omega_t$
+
+2.4 (5 points)  $z_t = z_{t-1} + 0.4z_{t-2} + \omega_t$
+
+2.5 (5 points)  $z_t = -0.5z_{t-1} - 0.25z_{t-2} + \omega_t$
+
+
+## Question 3: (30 points)
+
+3.1 (1 point) Load the series series1.csv
+
+3.2 (2 points) Describe the basic structure of the data and provide summary statistics of the series
+
+3.3 (4 points) Plot histogram and time-series plot of the series. Describe the patterns exhibited in histograrm and time-series plot. For time series analysis, is it sufficient to use only histogram to describe a series?
+
+3.4 (4 points) Plot the ACF and PACF of the series. Describe the patterns exhibited in the ACF and PACF.
+
+3.5 (2 points) Estimate the series using the *maximum likelihood method* option of *ar()* function.
+
+3.6 (1 points) Report the estimated AR parameters, the order of the model, and standard errors.
+
+3.7 (2 points) Estimate the series using the *Ordinary Least Squre* option of *ar()* function.
+
+3.8 (1 points) Report the estimated AR parameters, the order of the model, and standard errors.
+
+3.9 (2 points) Estimate the series using the *Yule-Walker Equations* option of *ar()* function.
+
+3.10 (1 points) Report the estimated AR parameters, the order of the model, and standard errors.
+
+3.11 (5 points) Are these estimates the same? If so, derive the formular to justify your answer. If not, please explain (but no mathematical derivation is needed.) How does the function *ar()* choose the "best" AR model? 
+
+
+## Question 4: (30 points)
+
+4.1 Simulate a time series of lenght 100 for the following model. Name the series $x$.
+
+$$
+  x_t = \frac{5}{6}x_{t-1} - \frac{1}{6}x_{t-2} + \omega_t
+$$
+
+
+4.2 Plot the correlogram and partial correlogram for the simulated series. Comments on the plots.
+
+
+4.3 Estimate an AR model for this simulated series. Report the estimated AR parameters, standard erros, and the order of the AR model.
+
+4.4 Construct a $95\%$ confidence intervals for the parameter estimates of the estimated model. Do the "true" mode parameters fall within the confidence intervals? Explain the $95\%$ confidence intervals in this context.
+
+4.5 Is the estimated model stationary or non-stationary?
+
+4.6 Plot the correlogram of the residuals of the estimated model. Comment on the plot.
+
+
+
+
+
+

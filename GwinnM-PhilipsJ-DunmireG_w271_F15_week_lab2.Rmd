@@ -1,0 +1,85 @@
+---
+title: "Lab2"
+author: "Glenn (Ted) Dunmire"
+date: "November 13, 2015"
+output: html_document
+---
+
+##Question 1: Concepts
+
+
+_1.1 (1 points) Define the term stochastic process._
+
+A stochastic process is defined as a statistical phenomenon evolving according to probabilistic laws. 
+
+_1.2 (2 points) Define the term time series. What is the difference between a stochastic process and a time series?_
+
+A time series is a set of observations generated sequentially in time. A time series arises as the result of a stochastic process. 
+
+###EXPAND ON THIS
+
+_1.3 (3 points) In your own words, discuss the mean function, variance function, and measure of dependency structure in the context of time series (week 8 - 10) and compare them with those we studied in classical linear model (week 1 - 7)._
+
+Mean is largely meaningingless in a time series context
+##TBD - STILL WORKING ON
+
+_1.4 (2 points) Define strict and weak statonarity_
+
+Strict stationarity is when the joint distributions for all time periods are the same. Formally it is if 
+$$F(x_t1, . . ., x_tn)$$ and $$F(x_t1+m, . . ., x_tn+m)$$ are equal for all (t1, . . ., tn) and m. 
+
+Weak stationarity is when a time series is stationary in mean and variance and if its autocovariance depends on time (k) and can be written as $$\gamma^{k}$$
+
+_1.5 (3 points) Give an example of a time series in real life. Describe the series. Evaluate (not empirical work is needed) whether or not the series can be modeled using the class of autoregressive models?_
+
+##NEED TO FIND ONE
+
+_1.6 (4 points) In your own words, define and describe partial autocorrelation function (PACF). Why is it not enough just to autocorrelation functon (ACF) to capture the dependency of a series?_
+
+##NEED TO DEFINE
+
+##Question 2
+
+_Determine if each of the following models is stationary_
+
+Use the polyroot function and if the absolute value of all roots is > 1 then stationary
+
+2.1 (5 points) $$zt = 0.95zt−1 + ωt$$
+
+```{r}
+polyroot(c(1, 0.95))
+```
+
+The absolute value is greater than 1, therefore this model is stationary. 
+
+2.2 (5 points) $$zt = 0.8zt−1 + 0.3zt−2 + ωt$$
+
+```{r}
+polyroot(c(1, 0.8, 0.3))
+```
+
+Both coefficients are greater than 1 in absolute value, therefore this model is stationary. 
+
+2.3 (5 points) $$zt = −0.5zt−1 + 0.5zt−2 + ωt$$
+
+```{r}
+polyroot(c(1, -0.5, 0.5))
+```
+
+##DON'T THINK SO?
+
+2.4 (5 points) $$zt = zt−1 + 0.4zt−2 + ωt$$
+
+```{r}
+polyroot(c(1, 1, 0.4))
+```
+
+Both roots are greater than 1 in absolute value, therefore the model is stationary. 
+
+2.5 (5 points) $$zt = −0.5zt−1 − 0.25zt−2 + ωt$$
+
+```{r}
+polyroot(c(1, -0.5, -0.25))
+```
+
+Both roots are greater than 1 in absolute value, therefore the model is stationary. 
