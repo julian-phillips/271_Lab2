@@ -83,3 +83,199 @@ polyroot(c(1, -0.5, -0.25))
 ```
 
 Both roots are greater than 1 in absolute value, therefore the model is stationary. 
+
+
+## Question 2
+*Determine if each of the following models is stationary*
+
+**2.1** $z_t=0.95z_{t-1}+\omega_t$
+
+Reorganize in terms of backward operator
+
+$\omega_t = 1 - 0.95B$
+
+set $\omega_t$ equal to 0
+
+$0 = 1 - 0.95B$
+
+Solve for B
+
+$B = 1/0.95 = 1.05$
+
+As the root is greater than 1, the AR model is stationary
+
+Alternatively you can use the polyroot function to determine the roots:
+
+```{r}
+polyroot(c(1,-.95))
+```
+
+This gives the same result as above.
+
+**2.2** $z_t=0.8z_{t-1}+0.3z_{t-2}+\omega_t$
+
+Reorganize in terms of backward operator
+
+$\omega_t = 1 - 0.8B -0.3B^2$
+
+Use polyroot
+
+```{r}
+polyroot(c(1,-0.8,-0.3))
+```
+
+As one root is not greater than 1, the AR model is not stationary
+
+**2.3** $z_t=-0.5z_{t-1}+0.5z_{t-2}+\omega_t$
+
+Reorganize in terms of backward operator
+
+$\omega_t = 1 + 0.5B -0.5B^2$
+
+Use polyroot
+
+```{r}
+polyroot(c(1,0.5,-0.5))
+```
+
+As one root is not greater than 1, the AR model is not stationary
+
+**2.4** $z_t=z_{t-1}+0.4z_{t-2}+\omega_t$
+
+Reorganize in terms of backward operator
+
+$\omega_t = 1 - B -0.4B^2$
+
+Use polyroot
+
+```{r}
+polyroot(c(1,-1,-0.4))
+```
+
+As one root is not greater than 1, the AR model is not stationary
+ 
+**2.5** $z_t=-0.5z_{t-1}-0.25z_{t-2}+\omega_t$
+
+Reorganize in terms of backward operator
+
+$\omega_t = 1 + 0.5B +0.25B^2$
+
+Use polyroot
+
+```{r}
+polyroot(c(1.0,0.5,0.25))
+```
+
+As both roots are greater than 1, the AR model is stationary
+
+
+## Question 2
+
+*3.1 Load the series series1.csv*
+
+```{r}
+series <- read.table("//vivica/Documents/MIDS/W271/w271_F15_week10_lab2/series.csv", quote="\"", comment.char="")
+```
+
+*3.2 Describe the basic structure of the data and provide summary statistics of the series*
+
+```{r}
+summ = summary(series)
+sd = sd(series)
+```
+There are 75 observations in the series.  The mean of the series is `r summ[4]` while the stadard deviation is `r sd`.  The minimum and maximum of the series are `r summ [1]` and `r summ [6]`, respectively. The 25th, 50th and 75th quantiles are `r summ[2]`, `r summ[3]` and `r summ[5]`, respectively.  
+
+*3.3 Plot histogram and time-series plot of the series.  Describe the patterns exhibited in histogram and time-series plot.  For time series analysis, is it sufficient to use only histogram to describe a series?*
+
+```{r, echo=FALSE}
+
+ind = seq(from = 1, to = 75)
+df = data.frame(ind,series)
+
+
+ts = ggplot(df, aes(x=ind, y=V1)) + geom_line() + ggtitle("Time Series")+ scale_x_continuous("Series") + scale_y_continuous("Value") 
+
+hist = ggplot(df, aes(df$V1)) + geom_histogram()+ ggtitle("Histogram")+ scale_x_continuous("Value")+ scale_y_continuous("Frequency")
+
+grid.arrange(ts, hist, ncol=2,nrow=1, top = textGrob("Time Series and Histogram from Lab 2 Question 3
+",gp=gpar(fontsize=12,font=2)))
+```
+
+The time series shows an increasing trend from 0 through 25 and after that there is a decreasing trend until the end of the dataset.  There also is seasonality throughout the entire dataset.
+
+The histogram shows many data points in the middle with tails on either end.  It is not normal.  It is not sufficient to just look at the histogram, the time series plot itself needs to always be looked at.
+
+*3.4 Plot the ACF and PACF of the series.  Describe the patterns exhibited in the ACF and PACF*
+
+```{r}
+acf(series, main="")
+title("Autocorrelation of Time Series")
+
+
+pacf(series, main="")
+title("Partial Autocorrelation of Time Series")
+```
+
+
+The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 8th lag.
+
+*3.5 Esimate the series using the maximum likelihood method option of ar() functions*
+```{r}
+arfit <- ar(df$V1, method = "mle")
+```
+
+arfit$order
+
+*3.6 Report the estimated AR parameters, the order of the model and standard errors*
+
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is `r sqrt(arfit$asy.var)`
+
+#FIX THIS.  NaNS INVOLVED, BUT ANSWER LIKELY 0.21564
+
+```{r}
+c(-2,2)*sqrt(arfit$asy.var)
+```
+
+*3.7 Estimate the series using the Ordinary Least Square option of ar() functions*
+```{r}
+arfit <- ar(df$V1, method = "ols")
+```
+
+
+*3.8 Report the estimated AR parameters, the order of the model and standard errors*
+
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is `r sqrt(arfit$asy.var)`
+
+*3.9 Estimate the series using the Yule-Walker Equations option of ar() functions*
+
+```{r}
+arfit <- ar(df$V1, method = "yw")
+```
+
+*3.10 Report the estimated AR parameters, the order of the model and standard errors*
+
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is `r sqrt(arfit$asy.var)`
+
+*3.11 Are these esimates the same?  If so, derive the forumla to justify your answer.  If not, please explain.  How does the function ar() choose the best AR model*
+
+
+
+*4.1 Simulate a time series of length 100 for the following model.  Name the series x.*
+
+$$x_t=\frac{5}{6}x_{t-1}-\frac{1}{6}x_{t-2}+\omega_t$$
+
+
+```{r}
+x <- arima.sim(n = 100, list(ar = c(5/6, -1/6), ma=0))
+```
+
+*4.2 Plot the correlogram and partial correlogram for the simluation series.  Comment on the plots*
+
+```{r}
+acf(x, main="")
+title("Autocorrelation of Time Series")
+
+
+pacf(x, main="")
+title("Partial Autocorrelation of Time Series")
+```
