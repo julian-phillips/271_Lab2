@@ -279,3 +279,35 @@ title("Autocorrelation of Time Series")
 pacf(x, main="")
 title("Partial Autocorrelation of Time Series")
 ```
+
+*4.3 Estimate an AR model for this simulated series.  Report the estimated AR parameters, standard errors and the order of the AR model* 
+
+
+```{r}
+
+arfit <- ar(x, method = "ols")
+
+```
+
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is `r sqrt(arfit$asy.var)`
+
+
+*4.4 Construct a 95% confident intervals for the parameter estimates of the estimated model.  Do the 'true' mode parameters fall within the confidence intervals?  Explain the 95% confidence intervals in this context*
+
+
+*4.5 Is the estimated model stationary or not station?*
+
+```{r}
+polyroot(arfit$ar)
+```
+
+As one root is not greater than 1, the AR model is not stationary
+
+*4.6 Plot the correlogram of the residuals of the estimated model.  Comment on the plot*
+
+
+```{r}
+acf(arfit$resid[8:500], main="")
+title("Autocorrelation of Time Series")
+```
+
