@@ -197,14 +197,9 @@ arfit <- ar(df$V1, method = "mle")
 
 **_3.6 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is 
-r sqrt(arfit$asy.var)
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r diag(sqrt(arfit$asy.var))`
 
 #FIX THIS.  NaNS INVOLVED, BUT ANSWER LIKELY 0.21564
-
-```{r}
-#c(-2,2)*sqrt(arfit$asy.var)
-```
 
 **_3.7 Estimate the series using the Ordinary Least Square option of ar() functions_**
 
@@ -214,7 +209,7 @@ arfit <- ar(df$V1, method = "ols")
 
 **_3.8 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is r sqrt(arfit$asy.var)
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r arfit$asy.se$ar`
 
 **_3.9 Estimate the series using the Yule-Walker Equations option of ar() functions_**
 
@@ -224,7 +219,7 @@ arfit <- ar(df$V1, method = "yw")
 
 **_3.10 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is r sqrt(arfit$asy.var)
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r diag(sqrt(arfit$asy.var))`
 
 **_3.11 Are these estimates the same?  If so, derive the forumla to justify your answer.  If not, please explain.  How does the function ar() choose the best AR model_**
 
@@ -262,7 +257,7 @@ The partial autocorrelation of the time series indicates that the series is only
 arfit <- ar(x, method = "ols")
 ```
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard error is r sqrt(arfit$asy.var)
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r arfit$asy.se$ar`
 
 **_4.4 Construct a 95% confident intervals for the parameter estimates of the estimated model.  Do the 'true' mode parameters fall within the confidence intervals?  Explain the 95% confidence intervals in this context_**
 
