@@ -2,7 +2,7 @@
 title: "Lab 2"
 author: "Glenn (Ted) Dunmire"
 date: "November 13, 2015"
-output: html_document
+output: pdf_document
 ---
 
 ##Question 1: Concepts
@@ -77,7 +77,7 @@ Use polyroot
 polyroot(c(1,-0.8,-0.3))
 ```
 
-As one root is not greater than 1, the AR model is not stationary
+As one root is not greater than 1 in absolute value, the AR model is not stationary
 
 **2.3** $z_t=-0.5z_{t-1}+0.5z_{t-2}+\omega_t$
 
@@ -91,7 +91,7 @@ Use polyroot
 polyroot(c(1,0.5,-0.5))
 ```
 
-As one root is not greater than 1, the AR model is not stationary
+As one root is not greater than 1 in absolute value, the AR model is not stationary
 
 **2.4** $z_t=z_{t-1}+0.4z_{t-2}+\omega_t$
 
@@ -105,7 +105,7 @@ Use polyroot
 polyroot(c(1,-1,-0.4))
 ```
 
-As one root is not greater than 1, the AR model is not stationary
+As one root is not greater than 1 in absolute value, the AR model is not stationary
  
 **2.5** $z_t=-0.5z_{t-1}-0.25z_{t-2}+\omega_t$
 
@@ -119,7 +119,7 @@ Use polyroot
 polyroot(c(1.0,0.5,0.25))
 ```
 
-As both roots are greater than 1, the AR model is stationary
+As both roots are greater than 1 in absolute value, the AR model is stationary
 
 ## Question 3
 
@@ -127,7 +127,7 @@ As both roots are greater than 1, the AR model is stationary
 
 ```{r}
 #Read Series Data
-series <- read.table("~/downloads/series.csv", quote="\"", comment.char="")
+series <- read.table("series.csv", quote="\"", comment.char="")
 #series <- read.table("//vivica/Documents/MIDS/W271/w271_F15_week10_lab2/series.csv", quote="\"", comment.char="")
 
 #Reference libraries
@@ -142,9 +142,10 @@ library(car)
 ```{r}
 summ = summary(series)
 sd = sd(series$V1)
+head(series)
 ```
 
-There are 75 observations in the series.  The mean of the series is `r summ[4]` while the standard deviation is `r sd`.  The minimum and maximum of the series are `r summ [1]` and `r summ [6]`, respectively. The 25th, 50th and 75th quantiles are `r summ[2]`, `r summ[3]` and `r summ[5]`, respectively.  
+There are 75 observations in the series, of 1 variable.  The mean of the series is `r summ[4]` while the standard deviation is `r sd`.  The minimum and maximum of the series are `r summ [1]` and `r summ [6]`, respectively. The 25th, 50th and 75th quantiles are `r summ[2]`, `r summ[3]` and `r summ[5]`, respectively. We have displayed the first 5 observations using the 'head' command to show in general what the series looks like. 
 
 **_3.3 Plot histogram and time-series plot of the series.  Describe the patterns exhibited in histogram and time-series plot.  For time series analysis, is it sufficient to use only histogram to describe a series?_**
 
@@ -164,7 +165,7 @@ hist = ggplot(df, aes(df$V1)) + geom_histogram()+ ggtitle("Histogram")+ scale_x_
 grid.arrange(ts, hist, ncol=2,nrow=1, top = textGrob("Time Series and Histogram from Lab 2 Question 3",gp=gpar(fontsize=12,font=2)))
 ```
 
-The time series shows an increasing trend from 0 through 25 and after that there is a decreasing trend until the end of the dataset. Even though the trend is decreasing, there are two relatively high peaks in time 44 and 45. There is seasonality throughout the entire dataset, exhibited by frequent peaks and troughs. 
+The time series shows an increasing trend from 0 through 25 and after that there is a decreasing trend until the end of the dataset. However, around time period 39 there is a large drop and then a significant spike persisting through time period 45 (approximately). Then the series continues to trend downward. There is seasonality throughout the entire dataset, exhibited by frequent peaks and troughs. 
 
 The distribution is clearly not normal and appears to be platykurtic, as there are many frequent points around the mean. 
 
@@ -185,7 +186,7 @@ title("Partial Autocorrelation of Time Series")
 ```
 
 
-The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 8th lag. 
+The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 8th lag. The autocorrelation function does not fluctuate around zero, which probably indicates that the parameters of the series are positive. Based on how long it takes for the function to decay, this suggests there is a moderate level of persistence in the time series. 
 
 The partial autocorrelation of the time series indicates that the series is only significantly dependent on previous values through the second lag. This means that after controlling for the shorter lags, only the first two lags remain statistically significant.
 
@@ -193,18 +194,18 @@ The partial autocorrelation of the time series indicates that the series is only
 
 ```{r}
 arfit <- ar(df$V1, method = "mle")
+arfit
 ```
 
 **_3.6 Report the estimated AR parameters, the order of the model and standard errors_**
 
 The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r diag(sqrt(arfit$asy.var))`
 
-#FIX THIS.  NaNS INVOLVED, BUT ANSWER LIKELY 0.21564
-
 **_3.7 Estimate the series using the Ordinary Least Square option of ar() functions_**
 
 ```{r}
 arfit <- ar(df$V1, method = "ols")
+arfit
 ```
 
 **_3.8 Report the estimated AR parameters, the order of the model and standard errors_**
@@ -215,6 +216,7 @@ The order of the model is `r arfit$order` while the estimated parameters are `r 
 
 ```{r}
 arfit <- ar(df$V1, method = "yw")
+arfit
 ```
 
 **_3.10 Report the estimated AR parameters, the order of the model and standard errors_**
@@ -225,13 +227,18 @@ The order of the model is `r arfit$order` while the estimated parameters are `r 
 
 NEED THE STANDARD ERRORS TO DO THIS
 
+## Question 4
+
 **_4.1 Simulate a time series of length 100 for the following model.  Name the series x._**
 
 $$x_t=\frac{5}{6}x_{t-1}-\frac{1}{6}x_{t-2}+\omega_t$$
 
 
 ```{r}
+set.seed(898)
 x <- arima.sim(n = 100, list(ar = c(5/6, -1/6), ma=0))
+plot.ts(x, xlab = "Simulated time period", ylab = "Simulated Value", main = "Simulated Time Series Model")
+hist(x, xlab = "Simulated Value", main = "Histogram of Simulated Time Series")
 ```
 
 **_4.2 Plot the correlogram and partial correlogram for the simluation series.  Comment on the plots_**
@@ -247,21 +254,26 @@ pacf(x, main="")
 title("Partial Autocorrelation of Time Series")
 ```
 
-The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 2nd lag. 
+The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 3rd lag. This would suggest an order 3 The switching signs in the autocorrelation suggests a negative parameter (which we know is correct from the model given). 
 
-The partial autocorrelation of the time series indicates that the series is only significantly dependent on previous values through the first lag. This means that after controlling for the shorter lags, only the first lag remains statistically significant.
+The partial autocorrelation of the time series indicates that the series is only significantly dependent on previous values through the first lag. This means that after controlling for the shorter lags, only the first lag remains statistically significant. This would suggest an AR(1) model would be appropriate to estimate this series. 
 
 **_4.3 Estimate an AR model for this simulated series.  Report the estimated AR parameters, standard errors and the order of the AR model_**
 
 ```{r}
-arfit <- ar(x, method = "ols")
+#arfit <- ar(x, method = "ols") ??????????????? (Also note appropriate standard errors)
+arfit <- ar(x, method = "mle")
 ```
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r arfit$asy.se$ar`
+The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r sqrt(arfit$asy.var.coef)`
 
 **_4.4 Construct a 95% confident intervals for the parameter estimates of the estimated model.  Do the 'true' mode parameters fall within the confidence intervals?  Explain the 95% confidence intervals in this context_**
 
-*NEED STANDARD ERRORS FOR THIS
+```{r}
+CI <- arfit$ar + c(-2, 2) * sqrt(arfit$asy.var.coef)
+```
+
+This confidence interval for the estimated parameter is `r CI`. 
 
 **_4.5 Is the estimated model stationary or not station?_**
 
@@ -269,7 +281,7 @@ The order of the model is `r arfit$order` while the estimated parameters are `r 
 polyroot(arfit$ar)
 ```
 
-As one root is not greater than 1, the AR model is not stationary
+As one root is not greater than 1 in absolute value, the AR model is not stationary
 
 **_4.6 Plot the correlogram of the residuals of the estimated model.  Comment on the plot_**
 
@@ -282,7 +294,7 @@ acf(arfit$resid[3:100], main="Autocorrelation of Time Series Residuals")
 hist(arfit$resid)
 
 #Time Series of Residuals
-plot.ts(arfit$resid, main="Simulated Random Noise Time Series",col="blue", ylab="Values", xlab="Simulated Time Period")
+plot.ts(arfit$resid, main="Simulated Random Noise Time Series",col="blue", ylab="Values", xlab="Simulated Time #Period")
 
 #QQ Plot of residuals
 qqPlot(arfit$resid, main="QQ Plot of Residuals", ylab="Residuals")
