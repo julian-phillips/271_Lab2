@@ -235,7 +235,7 @@ $$x_t=\frac{5}{6}x_{t-1}-\frac{1}{6}x_{t-2}+\omega_t$$
 
 
 ```{r}
-set.seed(898)
+set.seed(100)
 x <- arima.sim(n = 100, list(ar = c(5/6, -1/6), ma=0))
 plot.ts(x, xlab = "Simulated time period", ylab = "Simulated Value", main = "Simulated Time Series Model")
 hist(x, xlab = "Simulated Value", main = "Histogram of Simulated Time Series")
@@ -244,7 +244,7 @@ hist(x, xlab = "Simulated Value", main = "Histogram of Simulated Time Series")
 **_4.2 Plot the correlogram and partial correlogram for the simluation series.  Comment on the plots_**
 
 ```{r}
-
+par(mfrow = c(2,2))
 #Autocorrelation Function
 acf(x, main="")
 title("Autocorrelation of Time Series")
@@ -254,18 +254,17 @@ pacf(x, main="")
 title("Partial Autocorrelation of Time Series")
 ```
 
-The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 3rd lag. This would suggest an order 3 The switching signs in the autocorrelation suggests a negative parameter (which we know is correct from the model given). 
+The autocorrelation of the time series indicates that the series is highly dependent on its previous lag at a statistically significant level through the 2nd lag. The switching signs in the autocorrelation suggests a negative parameter (which we know is correct from the model given). 
 
 The partial autocorrelation of the time series indicates that the series is only significantly dependent on previous values through the first lag. This means that after controlling for the shorter lags, only the first lag remains statistically significant. This would suggest an AR(1) model would be appropriate to estimate this series. 
 
 **_4.3 Estimate an AR model for this simulated series.  Report the estimated AR parameters, standard errors and the order of the AR model_**
 
 ```{r}
-#arfit <- ar(x, method = "ols") ??????????????? (Also note appropriate standard errors)
 arfit <- ar(x, method = "mle")
 ```
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r sqrt(arfit$asy.var.coef)`
+The order of the model is `r arfit$order` while the estimated parameter is `r arfit$ar`.  The standard error is `r sqrt(arfit$asy.var.coef)`
 
 **_4.4 Construct a 95% confident intervals for the parameter estimates of the estimated model.  Do the 'true' mode parameters fall within the confidence intervals?  Explain the 95% confidence intervals in this context_**
 
@@ -273,31 +272,44 @@ The order of the model is `r arfit$order` while the estimated parameters are `r 
 CI <- arfit$ar + c(-2, 2) * sqrt(arfit$asy.var.coef)
 ```
 
-This confidence interval for the estimated parameter is `r CI`. 
+This confidence interval for the estimated parameter is `r CI`. To recall, the true parameters of this model are `r 5/6` and `r -1/6`. Neither of these parameters are contained in the confidence interval obtained for the simulated AR(1) model. In the classic linear model, we check if the confidence contains 0 because if the confidence interval does contain 0 we know that the test statistic will not be statisically significant (assuming a 0.05 level). In this case, we are interested in determining if our model's estimated parameter contains the true parameter, to see how well our model estimates the true series. However, in this case our model does not contain the true parameters so we would conclude (at the 0.05 level) our models estimate is statisitcally significantly different from the true parameter. 
 
 **_4.5 Is the estimated model stationary or not station?_**
 
 ```{r}
-polyroot(arfit$ar)
+polyroot(c(1, -arfit$ar))
 ```
 
-As one root is not greater than 1 in absolute value, the AR model is not stationary
+The root is greater than 1 in absolute value, therefore this model is stationary. 
 
 **_4.6 Plot the correlogram of the residuals of the estimated model.  Comment on the plot_**
 
 ```{r}
-
+resids <- arfit$resid[2:100] #subsetting to remove NA
+par(mfrow = c(2,2))
 #Autocorrelation Function of Residuals
-acf(arfit$resid[3:100], main="Autocorrelation of Time Series Residuals")
+acf(resids, main="Autocorrelation of Time Series Residuals")
 
-#Histogram of Residuals
-hist(arfit$resid)
+#Partial Autocorrelation Function of Residuals
+pacf(resids, main = "Partial Autocorrelation of Time Series Residuals")
 
 #Time Series of Residuals
-plot.ts(arfit$resid, main="Simulated Random Noise Time Series",col="blue", ylab="Values", xlab="Simulated Time #Period")
+plot.ts(resids, main="Simulated Series Residuals",col="blue", ylab="Values", xlab="Simulated Time #Period")
 
-#QQ Plot of residuals
-qqPlot(arfit$resid, main="QQ Plot of Residuals", ylab="Residuals")
+#White noise for comparison
+plot(rnorm(100), type="l", main="Gaussian White Noise")
 ```
 
-The plot seems to have somewhat of a pattern in that residuals are positive for a few points and then negative for a few points. The QQ plot also shows this trend in the residuals, as values fluctuate below and above the y = x line. 
+The autocorrelation function does not really show any autocorrelation. 
+
+At a glance, it's a little hard to tell the white noise and the residuals apart. The simulated residuals display more flucuations than the white noise, but there is not an obvious trend. Based on that, and the lack of autocorrelation from above, it is probably reasonable to say the evidence supports the hypothesis that the residuals resemble white noise. 
+
+```{r}
+#Histogram of Residuals
+hist(resids, main = "Histogram of TS Residuals")
+
+#QQ Plot of residuals
+qqPlot(resids, main="QQ Plot of Residuals", ylab="Residuals")
+```
+
+The histogram does not look particularly normally distributed. However, the QQ plot is mostly normal, following the line with some exceptions. The QQ plot shows a bit of a trend in the residuals, as values fluctuate below and above the y = x line especially in the positive direction. This is probably enough evidence to be cautious about concluding the residuals are normally distributed. 
