@@ -2,7 +2,7 @@
 title: "Lab 2"
 author: "Glenn (Ted) Dunmire"
 date: "November 13, 2015"
-output: pdf_document
+output: html_document
 ---
 
 ##Question 1: Concepts
@@ -127,6 +127,7 @@ As both roots are greater than 1 in absolute value, the AR model is stationary
 
 ```{r}
 #Read Series Data
+
 series <- read.table("series.csv", quote="\"", comment.char="")
 #series <- read.table("//vivica/Documents/MIDS/W271/w271_F15_week10_lab2/series.csv", quote="\"", comment.char="")
 
@@ -225,7 +226,9 @@ The order of the model is `r arfit$order` while the estimated parameters are `r 
 
 **_3.11 Are these estimates the same?  If so, derive the forumla to justify your answer.  If not, please explain.  How does the function ar() choose the best AR model_**
 
-NEED THE STANDARD ERRORS TO DO THIS
+The order of these models are not necessarily the same. The MLE and Yule-Walker methods give a 2 order model, while the OLS method gives a 4 order model. That being said, the standard errors of the estimates themselves tend to be large, making the confidence interval fall in the range of +/- about .20, making it a range of about .40. We cannot say these estimates are significantly different from one another after calculating the z-scores between parameters: 
+
+z = (P1 - P2) / √(seP1^2 + seP2^2)
 
 ## Question 4
 
