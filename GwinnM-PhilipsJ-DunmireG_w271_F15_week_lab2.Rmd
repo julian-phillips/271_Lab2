@@ -2,7 +2,7 @@
 title: "Lab 2"
 author: "Glenn (Ted) Dunmire"
 date: "November 13, 2015"
-output: html_document
+output: pdf_document
 ---
 
 ##Question 1: Concepts
@@ -194,41 +194,63 @@ The partial autocorrelation of the time series indicates that the series is only
 **_3.5 Esimate the series using the maximum likelihood method option of ar() functions_**
 
 ```{r}
-arfit <- ar(df$V1, method = "mle")
-arfit
+arfit1 <- ar(df$V1, method = "mle")
+arfit1
 ```
 
 **_3.6 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r diag(sqrt(arfit$asy.var))`
+The order of the model is `r arfit1$order` while the estimated parameters are `r arfit1$ar`.  The standard errors are `r diag(sqrt(arfit1$asy.var))`
 
 **_3.7 Estimate the series using the Ordinary Least Square option of ar() functions_**
 
 ```{r}
-arfit <- ar(df$V1, method = "ols")
-arfit
+arfit2 <- ar(df$V1, method = "ols")
+arfit2
 ```
 
 **_3.8 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r arfit$asy.se$ar`
+The order of the model is `r arfit2$order` while the estimated parameters are `r arfit2$ar`.  The standard errors are `r arfit2$asy.se$ar`
 
 **_3.9 Estimate the series using the Yule-Walker Equations option of ar() functions_**
 
 ```{r}
-arfit <- ar(df$V1, method = "yw")
-arfit
+arfit3 <- ar(df$V1, method = "yw")
+arfit3
 ```
 
 **_3.10 Report the estimated AR parameters, the order of the model and standard errors_**
 
-The order of the model is `r arfit$order` while the estimated parameters are `r arfit$ar`.  The standard errors are `r diag(sqrt(arfit$asy.var))`
+The order of the model is `r arfit3$order` while the estimated parameters are `r arfit3$ar`.  The standard errors are `r diag(sqrt(arfit3$asy.var))`
 
 **_3.11 Are these estimates the same?  If so, derive the forumla to justify your answer.  If not, please explain.  How does the function ar() choose the best AR model_**
 
-The order of these models are not necessarily the same. The MLE and Yule-Walker methods give a 2 order model, while the OLS method gives a 4 order model. That being said, the standard errors of the estimates themselves tend to be large, making the confidence interval fall in the range of +/- about .20, making it a range of about .40. We cannot say these estimates are significantly different from one another after calculating the z-scores between parameters: 
+```{r, warning= FALSE, collapse = TRUE}
+#Confidence Interval first parameter
+arfit1$ar[1] + c(-2, 2) * sqrt(arfit1$asy.var.coef)[1,1]
+arfit2$ar[1] + c(-2, 2) * arfit2$asy.se.coef$ar[1]
+arfit3$ar[1] + c(-2, 2) * sqrt(arfit3$asy.var.coef)[1,1]
 
-z = (P1 - P2) / √(seP1^2 + seP2^2)
+#Confidence interval second parameter
+arfit1$ar[2] + c(-2,2) * sqrt(arfit1$asy.var.coef)[2,2]
+arfit2$ar[2] + c(-2, 2) * arfit2$asy.se.coef$ar[2]
+arfit3$ar[2] + c(-2, 2) * sqrt(arfit3$asy.var.coef)[2,2]
+
+#Confidence interval third parameter
+0
+arfit2$ar[3] + c(-2, 2) * arfit2$asy.se.coef$ar[3]
+0
+
+#Confidence interval Fourth parameter
+0
+arfit2$ar[4] + c(-2, 2) * arfit2$asy.se.coef$ar[4]
+0
+```
+
+The order of these models are not necessarily the same. The MLE and Yule-Walker methods give a 2 order model, while the OLS method gives a 4 order model. That being said, the standard errors of the estimates themselves tend to be large, making the confidence interval fall in the range of +/- about 0.20, making it a range of about 0.40. The confidence intervals are displayed above, showing a lot of overlap between estimates. However, this does not indicate the estimates are the same. In fact, these three methods of fitting the model use different ways to calculate the estimates, the Yule-Walker equations are different than the OLS method. Therefore we suggest the model estimates are probably not the same. 
+
+In general the ar() function chooses the model with the lowest AIC. For example, using our arfit1 model we can show the AIC for the various possible models is `r arfit1$aic`. The 2nd order model is shown as 0 because this hd the lowest AIC of all the models. The other AIC's are shown as the difference between the lowest AIC and the AIC for that order model. That is, the 3rd order model shows the difference between the 3rd order model AIC - 2nd order model AIC.  
 
 ## Question 4
 
